@@ -1,0 +1,36 @@
+{
+    "name": "Dick Harper is a Tool",
+    "short_name": "DickHarper",
+    "description": "A fanmade parody site of the classic Fun with Dick and Jane meme. Track days since Globodyne tanked.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#336699",
+    "theme_color": "#336699",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "images/favicon.png",
+            "sizes": "32x32",
+            "type": "image/png"
+        },
+        {
+            "src": "images/social.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "entertainment",
+        "lifestyle"
+    ],
+    "lang": "en",
+    "screenshots": [
+        {
+            "src": "images/social.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "platform": "wide"
+        }
+    ]
+}

@@ -1,24 +1,233 @@
-setInterval(() => {
-    // To calculate the time difference of two dates
-    var time = new Date().getTime() - new Date("12/01/2000").getTime();
-    
-    // To calculate the no. of days between two dates
-    var days = time / (1000 * 3600 * 24);
-    
-    //To display the final no. of days (result)
-    document.getElementById("date").textContent = days.toFixed(5);
-}, 100);
+// Modern JavaScript for Dick Harper is a Tool website
+class GlobodyneTracker {
+    constructor() {
+        this.startDate = new Date("2000-12-01");
+        this.dateElement = document.getElementById("date");
+        this.video = document.getElementById("main-video");
+        this.playPauseBtn = document.getElementById("play-pause-btn");
+        this.muteBtn = document.getElementById("mute-btn");
+        this.fullscreenBtn = document.getElementById("fullscreen-btn");
+        this.videoControls = document.getElementById("video-controls");
 
-var alreadySet = false;
+        this.init();
+    }
 
-function set() {
-    alreadySet = true;
-    document.getElementById("iframe").setAttribute("src", "https://www.youtube.com/embed/GF5AjJd6O5U?version=3&autoplay=1&list=PLxUCeVeZhl2fCFMxMlU0T2w40PlWXG4EW&loop=1&showinfo=0&controls=0");
-}        
+    init() {
+        this.updateDayCounter();
+        this.setupVideoControls();
 
-window.addEventListener("click", function(event) {
-    if ( !alreadySet )
-        set();
-        document.getElementById("rainbow").style.display = 'block';
+        // Update every minute instead of every 100ms for better performance
+        setInterval(() => this.updateDayCounter(), 60000);
+    }
 
+    updateDayCounter() {
+        const currentTime = Date.now();
+        const timeDifference = currentTime - this.startDate.getTime();
+        const daysSince = timeDifference / (1000 * 3600 * 24);
+
+
+        if (this.dateElement) {
+            this.dateElement.textContent = daysSince.toFixed(2);
+        }
+    }
+
+    setupVideoControls() {
+        if (!this.video) return;
+
+        // Auto-hide controls after 3 seconds of no mouse movement
+        let controlsTimeout;
+        const showControls = () => {
+            if (this.videoControls) {
+                this.videoControls.style.opacity = '1';
+                clearTimeout(controlsTimeout);
+                controlsTimeout = setTimeout(() => {
+                    this.videoControls.style.opacity = '0';
+                }, 3000);
+            }
+        };
+
+        // Show controls on mouse movement
+        this.video.addEventListener('mousemove', showControls);
+        this.video.addEventListener('mouseenter', showControls);
+
+        // Play/Pause button
+        if (this.playPauseBtn) {
+            this.playPauseBtn.addEventListener('click', () => {
+                if (this.video.paused) {
+                    this.video.play();
+                    this.playPauseBtn.textContent = '⏸️';
+                    this.playPauseBtn.setAttribute('aria-label', 'Pause video');
+                } else {
+                    this.video.pause();
+                    this.playPauseBtn.textContent = '▶️';
+                    this.playPauseBtn.setAttribute('aria-label', 'Play video');
+                }
+                showControls();
+            });
+        }
+
+        // Mute button
+        if (this.muteBtn) {
+            this.muteBtn.addEventListener('click', () => {
+                if (this.video.muted) {
+                    this.video.muted = false;
+                    this.muteBtn.textContent = '🔊';
+                    this.muteBtn.setAttribute('aria-label', 'Mute video');
+                } else {
+                    this.video.muted = true;
+                    this.muteBtn.textContent = '🔇';
+                    this.muteBtn.setAttribute('aria-label', 'Unmute video');
+                }
+                showControls();
+
+                // Analytics event
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', this.video.muted ? 'video_mute' : 'video_unmute', {
+                        'event_category': 'engagement',
+                        'event_label': 'Local Video'
+                    });
+                }
+            });
+        }
+
+        // Fullscreen button
+        if (this.fullscreenBtn) {
+            this.fullscreenBtn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    this.video.requestFullscreen().catch(err => {
+                        console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                    });
+                    this.fullscreenBtn.textContent = '⛶';
+                    this.fullscreenBtn.setAttribute('aria-label', 'Exit fullscreen');
+                } else {
+                    document.exitFullscreen();
+                    this.fullscreenBtn.textContent = '⛶';
+                    this.fullscreenBtn.setAttribute('aria-label', 'Enter fullscreen');
+                }
+                showControls();
+            });
+        }
+
+        // Video event listeners
+        this.video.addEventListener('play', () => {
+            if (this.playPauseBtn) {
+                this.playPauseBtn.textContent = '⏸️';
+                this.playPauseBtn.setAttribute('aria-label', 'Pause video');
+            }
+
+            // Analytics event
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'video_play', {
+                    'event_category': 'engagement',
+                    'event_label': 'Local Video'
+                });
+            }
+        });
+
+        this.video.addEventListener('pause', () => {
+            if (this.playPauseBtn) {
+                this.playPauseBtn.textContent = '▶️';
+                this.playPauseBtn.setAttribute('aria-label', 'Play video');
+            }
+        });
+
+        this.video.addEventListener('loadstart', () => {
+            console.log('Video loading started');
+        });
+
+        this.video.addEventListener('canplay', () => {
+            console.log('Video can start playing');
+            showControls();
+        });
+
+        this.video.addEventListener('error', (e) => {
+            console.error('Video error:', e);
+            this.showVideoError();
+        });
+
+        // Keyboard controls
+        this.video.addEventListener('keydown', (e) => {
+            switch (e.key) {
+                case ' ':
+                case 'k':
+                    e.preventDefault();
+                    if (this.video.paused) {
+                        this.video.play();
+                    } else {
+                        this.video.pause();
+                    }
+                    break;
+                case 'm':
+                    e.preventDefault();
+                    this.video.muted = !this.video.muted;
+                    break;
+                case 'f':
+                    e.preventDefault();
+                    if (!document.fullscreenElement) {
+                        this.video.requestFullscreen();
+                    } else {
+                        document.exitFullscreen();
+                    }
+                    break;
+            }
+            showControls();
+        });
+
+        // Click to play/pause
+        this.video.addEventListener('click', () => {
+            if (this.video.paused) {
+                this.video.play();
+            } else {
+                this.video.pause();
+            }
+        });
+
+        // Auto-unmute after user interaction
+        document.addEventListener('click', () => {
+            if (this.video.muted) {
+                setTimeout(() => {
+                    this.video.muted = false;
+                    if (this.muteBtn) {
+                        this.muteBtn.textContent = '🔊';
+                        this.muteBtn.setAttribute('aria-label', 'Mute video');
+                    }
+                }, 1000);
+            }
+        }, { once: true });
+
+        // Initial controls setup
+        showControls();
+    }
+
+    showVideoError() {
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'video-error';
+        errorMsg.innerHTML = `
+            <h3>Video Error</h3>
+            <p>Unable to load video.mp4. Please check that the file exists and is accessible.</p>
+            <p><a href="./video.mp4" target="_blank">Try downloading the video directly</a></p>
+        `;
+
+        if (this.video.parentNode) {
+            this.video.parentNode.appendChild(errorMsg);
+        }
+    }
+}
+
+// Initialize when DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    new GlobodyneTracker();
 });
+
+// Service Worker registration for PWA capabilities
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('SW registered: ', registration);
+            })
+            .catch(registrationError => {
+                console.log('SW registration failed: ', registrationError);
+            });
+    });
+}

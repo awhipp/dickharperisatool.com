@@ -1,91 +1,132 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Performance and Security -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="theme-color" content="#336699">
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//www.googletagmanager.com">
 
     <!-- Primary Meta Tags -->
     <title>Dick Harper is a Tool | Globodyne Tanking Meme</title>
     <meta name="title" content="Dick Harper is a Tool | Globodyne Tanking Meme">
-    <meta name="description" content="A fanmade parody site of the classic Fun with Dick and Jane meme.">
+    <meta name="description"
+        content="A fanmade parody site of the classic Fun with Dick and Jane meme. Track days since Globodyne tanked with this nostalgic 2000s movie reference.">
+    <meta name="keywords"
+        content="Dick Harper, Fun with Dick and Jane, Globodyne, Jim Carrey, Tea Leoni, meme, 2000s movie">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://dickharperisatool.com/">
     <meta property="og:title" content="Dick Harper is a Tool | Globodyne Tanking Meme">
-    <meta property="og:description" content="A fanmade parody site of the classic Fun with Dick and Jane meme.">
+    <meta property="og:description"
+        content="A fanmade parody site of the classic Fun with Dick and Jane meme. Track days since Globodyne tanked with this nostalgic 2000s movie reference.">
     <meta property="og:image" content="https://dickharperisatool.com/images/social.png">
-    <meta property="fb:app_id" content="">
+    <meta property="og:image:alt" content="Dick Harper is a Tool website preview">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://dickharperisatool.com/">
     <meta property="twitter:title" content="Dick Harper is a Tool | Globodyne Tanking Meme">
-    <meta property="twitter:description" content="A fanmade parody site of the classic Fun with Dick and Jane meme.">
+    <meta property="twitter:description"
+        content="A fanmade parody site of the classic Fun with Dick and Jane meme. Track days since Globodyne tanked with this nostalgic 2000s movie reference.">
     <meta property="twitter:image" content="https://dickharperisatool.com/images/social.png">
 
-    <link rel="shortcut icon" href="./images/favicon.png" type="image/x-icon">
+    <!-- Favicon and Icons -->
+    <link rel="icon" href="./images/favicon.png" type="image/png">
+    <link rel="shortcut icon" href="./images/favicon.png" type="image/png">
 
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="./manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Dick Harper">
+
+    <!-- Critical CSS - Load immediately -->
+    <link rel="stylesheet" href="./styles/bulma.min.css">
+    <link rel="stylesheet" href="./styles/styles.css">
+
+    <!-- Google Fonts - Optimized loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <section class="hero is-fullheight is-default is-bold">
+    <header class="hero is-fullheight is-default is-bold">
         <div class="hero-head">
-            <nav class="navbar">
-                <div class="container">
-                    <div class="navbar-brand">
-                        <a class="navbar-item" href="#">
-                            <h1> Dick Harper is a Tool </h1>
-                        </a>
-                    </div>
-                </div>
+            <nav class="navbar" role="navigation" aria-label="main navigation">
+                <!-- Minimal nav for accessibility -->
             </nav>
         </div>
-        <div class="hero-body">
-            
-            <div class="container has-text-centered">
-                <div class="columns is-vcentered">
-                    <div class="column is-12">
-                        <div class="main">
-                            <h3><span id="date"></span> days since Globodyne tanked.</h3>
-        
-                            <div class="video-container">
-                                    <iframe id="iframe" src="https://www.youtube.com/embed/GF5AjJd6O5U?version=3&autoplay=1&list=PLxUCeVeZhl2fCFMxMlU0T2w40PlWXG4EW&loop=1&showinfo=0&controls=0&fs=0&modestbranding=1&rel=0" allow="autoplay" title="YouTube video player" frameborder="0"></iframe>
-                            </div>
-                        </div>
-                    </div>
+
+        <main class="hero-body">
+            <div class="video-container" role="region" aria-label="Fun with Dick and Jane video">
+                <video id="main-video" src="./video.mp4" autoplay muted loop playsinline preload="auto"
+                    aria-label="Fun with Dick and Jane - Classic Scene" poster="./images/social.png">
+                    <p>Your browser doesn't support HTML5 video. <a href="./video.mp4">Download the
+                            video</a> instead.</p>
+                </video>
+
+                <!-- Floating Title -->
+                <div class="floating-title">
+                    <h1>Dick Harper is a Tool</h1>
+                </div>
+
+                <!-- Floating Counter -->
+                <div class="floating-counter">
+                    <h2 id="main-heading">
+                        <span id="date" aria-live="polite">Loading...</span><br>
+                        <span class="counter-label">days since Globodyne tanked</span>
+                    </h2>
+                </div>
+
+                <!-- Video Controls -->
+                <div id="video-controls" class="video-controls">
+                    <button id="play-pause-btn" class="control-button" aria-label="Play/Pause video">
+                        ⏸️
+                    </button>
+                    <button id="mute-btn" class="control-button" aria-label="Mute/Unmute video">
+                        🔊
+                    </button>
+                    <button id="fullscreen-btn" class="control-button" aria-label="Enter/Exit fullscreen">
+                        ⛶
+                    </button>
                 </div>
             </div>
+        </main>
 
-        </div>
-
-        <div class="hero-foot">
+        <footer class="hero-foot">
             <div class="container">
                 <div class="tabs is-centered">
                     <ul>
-                        <li><a href="https://github.com/awhipp" target="_blank">© 2022 @awhipp. All rights reserved.</a></li>
+                        <li>
+                            <a href="https://github.com/awhipp" target="_blank" rel="noopener noreferrer"
+                                aria-label="Visit developer's GitHub profile">
+                                © 2025 @awhipp. All rights reserved.
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
-        </div>
+        </footer>
+    </header>
 
-    </section>
+    <!-- Scripts loaded at the end for performance -->
+    <script src="./javascript/script.js"></script>
 
-    <link rel="stylesheet" href="./styles/bulma.min.css" />
-    <link href="./styles/styles.css" rel="stylesheet">
-
-    <script defer src="./javascript/script.js"></script>
-    <script defer src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0599578547621989" crossorigin="anonymous" defer></script>
-    <script defer src="https://www.googletagmanager.com/gtag/js?id=UA-53648946-16"></script>
-    <script defer>
+    <!-- Analytics - Updated to GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
-
-        gtag('config', 'UA-53648946-16');
+        gtag('config', 'G-XXXXXXXXXX'); // Replace with your GA4 measurement ID
     </script>
 </body>
 
