@@ -8,12 +8,15 @@ class GlobodyneTracker {
         this.muteBtn = document.getElementById("mute-btn");
         this.fullscreenBtn = document.getElementById("fullscreen-btn");
         this.videoControls = document.getElementById("video-controls");
+        this.soundNotification = document.getElementById("sound-notification");
+        this.enableSoundBtn = document.getElementById("enable-sound-btn");
 
         this.init();
     }
 
     init() {
         this.updateDayCounter();
+        this.setupSoundNotification();
         this.setupVideoControls();
 
         // Update every minute instead of every 100ms for better performance
@@ -28,6 +31,68 @@ class GlobodyneTracker {
 
         if (this.dateElement) {
             this.dateElement.textContent = daysSince.toFixed(2);
+        }
+    }
+
+    setupSoundNotification() {
+        if (!this.enableSoundBtn || !this.soundNotification || !this.video) return;
+
+        // Show notification for 8 seconds, then auto-hide
+        // const autoHideTimeout = setTimeout(() => {
+        //     this.hideSoundNotification();
+        // }, 8000);
+
+        // Handle enable sound button click
+        this.enableSoundBtn.addEventListener('click', () => {
+            this.enableSound();
+            // clearTimeout(autoHideTimeout);
+        });
+
+        // Handle Enter key on button
+        this.enableSoundBtn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.enableSound();
+                // clearTimeout(autoHideTimeout);
+            }
+        });
+
+        // Auto-hide on any video interaction
+        this.video.addEventListener('click', () => {
+            // clearTimeout(autoHideTimeout);
+            setTimeout(() => this.hideSoundNotification(), 2000);
+        });
+    }
+
+    enableSound() {
+        if (!this.video) return;
+
+        // Enable audio
+        this.video.muted = false;
+
+        // Update mute button state
+        if (this.muteBtn) {
+            this.muteBtn.textContent = '🔊';
+            this.muteBtn.setAttribute('aria-label', 'Mute video');
+        }
+
+        // Hide notification
+        this.hideSoundNotification();
+
+        // Analytics event
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'sound_enabled', {
+                'event_category': 'engagement',
+                'event_label': 'Sound Notification'
+            });
+        }
+
+        console.log('Sound enabled via notification');
+    }
+
+    hideSoundNotification() {
+        if (this.soundNotification) {
+            this.soundNotification.classList.add('hidden');
         }
     }
 
@@ -181,19 +246,6 @@ class GlobodyneTracker {
                 this.video.pause();
             }
         });
-
-        // Auto-unmute after user interaction
-        document.addEventListener('click', () => {
-            if (this.video.muted) {
-                setTimeout(() => {
-                    this.video.muted = false;
-                    if (this.muteBtn) {
-                        this.muteBtn.textContent = '🔊';
-                        this.muteBtn.setAttribute('aria-label', 'Mute video');
-                    }
-                }, 1000);
-            }
-        }, { once: true });
 
         // Initial controls setup
         showControls();

@@ -84,12 +84,103 @@ body {
     height: 100vh;
     overflow: hidden;
     background-color: var(--video-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .video-container video {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: fill;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+/* Responsive video behavior for mobile */
+@media screen and (max-width: 768px) {
+    .video-container video {
+        object-fit: fill;
+        background-color: var(--video-bg);
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .video-container video {
+        object-fit: fill;
+        width: 100%;
+        height: auto;
+        min-height: 100vh;
+    }
+}
+
+/* Portrait orientation specific adjustments */
+@media screen and (orientation: portrait) and (max-width: 768px) {
+    .video-container video {
+        object-fit: fill;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+/* Sound Notification Popup - Non-intrusive */
+.sound-notification {
+    position: absolute;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    z-index: 15;
+    opacity: 1;
+    transition: all var(--transition-normal);
+    transform: translateY(0);
+}
+
+.sound-notification.hidden {
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+}
+
+.enable-sound-btn {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-sm) var(--spacing-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    backdrop-filter: blur(15px);
+    color: white;
+    font-family: var(--font-family);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 0.9rem;
+    font-weight: var(--font-weight-semibold);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.enable-sound-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    border-color: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.enable-sound-btn:focus {
+    outline: 2px solid var(--primary-light);
+    outline-offset: 2px;
+}
+
+.enable-sound-btn:active {
+    transform: translateY(0);
+}
+
+.sound-icon {
+    font-size: 1.1rem;
+    filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.sound-text {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 /* Floating title in top left */
@@ -116,7 +207,7 @@ body {
 /* Floating counter in bottom right */
 .floating-counter {
     position: absolute;
-    bottom: var(--spacing-xl);
+    bottom: var(--spacing-sm);
     right: var(--spacing-lg);
     z-index: 10;
     text-align: right;
@@ -149,15 +240,7 @@ body {
     font-weight: var(--font-weight-semibold);
 }
 
-/* Modern video player styling */
-.video-container video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: var(--border-radius-lg);
-}
-
-/* Custom video controls - repositioned */
+/* Custom video controls */
 .video-controls {
     position: absolute;
     bottom: var(--spacing-lg);
@@ -206,6 +289,7 @@ body {
 /* Footer adjustments */
 .hero-foot {
     position: absolute;
+    display: none;
     bottom: 0;
     left: 0;
     right: 0;
@@ -274,7 +358,7 @@ body {
     }
 
     .floating-counter {
-        bottom: var(--spacing-xl);
+        bottom: var(--spacing-sm);
         right: var(--spacing-md);
     }
 
@@ -311,7 +395,6 @@ body {
     }
 
     .floating-counter {
-        bottom: 80px;
         /* Above footer on mobile */
         right: var(--spacing-sm);
     }
@@ -341,6 +424,22 @@ body {
     .hero-foot .tabs {
         font-size: 0.8rem;
     }
+
+    /* Sound notification mobile adjustments */
+    .sound-notification {
+        top: var(--spacing-sm);
+        right: var(--spacing-sm);
+    }
+
+    .enable-sound-btn {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: 0.8rem;
+        gap: var(--spacing-xs);
+    }
+
+    .sound-icon {
+        font-size: 1rem;
+    }
 }
 
 /* Landscape mobile adjustments */
@@ -355,11 +454,37 @@ body {
     }
 
     .floating-counter {
-        bottom: var(--spacing-md);
+        bottom: var(--spacing-sm);
     }
 
     .video-controls {
         bottom: var(--spacing-xs);
+    }
+
+    /* Keep video cover in landscape to avoid pillarboxing */
+    .video-container video {
+        object-fit: fill !important;
+    }
+}
+
+/* Extra small screens - very narrow phones */
+@media screen and (max-width: 320px) {
+    .floating-title h1 {
+        font-size: 0.9rem;
+        padding: var(--spacing-xs);
+    }
+
+    .floating-counter h2 {
+        font-size: 0.9rem;
+        padding: var(--spacing-xs);
+    }
+
+    #date {
+        font-size: 1.5em;
+    }
+
+    .counter-label {
+        font-size: 0.6em;
     }
 }
 
